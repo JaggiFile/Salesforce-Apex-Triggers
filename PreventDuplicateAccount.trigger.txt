@@ -1,0 +1,17 @@
+trigger PreventDuplicateAccount on Account (before insert) {
+    Set<String> accnames = new Set<String>();
+    for(Account acc : Trigger.new){
+        accNames.add(acc.Name);
+    }
+    
+    Map<String, Account> existingAccs = new Map<String, Account>();
+    for(Account acc : [SELECT Name FROM Account WHERE Name IN : accnames]){
+        existingAccs.put(acc.Name, acc);
+    }
+    for(Account acc : Trigger.new){
+        if(existingAccs.containskey(acc.Name)){
+            acc.addError('An Account withthis name already exists.');
+        }
+    }
+
+}
